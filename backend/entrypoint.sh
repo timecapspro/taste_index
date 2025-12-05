@@ -62,7 +62,7 @@ for i in $(seq 1 30); do
 done
 
 
-php artisan migrate --force || true
+php artisan migrate --force
 php artisan db:seed || true
 php artisan l5-swagger:generate || true
 php artisan serve --host=0.0.0.0 --port=8000
