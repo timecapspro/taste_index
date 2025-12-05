@@ -44,7 +44,8 @@ password: demo12345
 
 ### Установка зависимостей в контейнерах
 
-- Backend (Laravel): `docker compose exec api composer install`
+- Backend (Laravel): зависимости ставятся автоматически при старте `api` (composer выполняется перед любыми artisan-командами)
+  и кешируются в volume `api_vendor`; при необходимости повторной установки вручную: `docker compose exec api composer install`
 - Frontend (Next.js): `docker compose exec frontend npm install`
 
 ## Структура
@@ -56,6 +57,7 @@ password: demo12345
 
 ## Примечания
 
-- В репозитории находится минимальный каркас Laravel/Next: для полноценной работы требуется установить зависимости (`composer install`, `npm install`) внутри контейнеров или локально.
+- В репозитории находится минимальный каркас Laravel/Next: зависимости бэкенда ставятся автоматически при `docker compose up`,
+  для фронтенда достаточно `npm install` внутри контейнеров или локально.
 - phpMyAdmin защищён обратным прокси `pma_proxy` с basic-auth; пароли формируются из переменных окружения.
 - CORS разрешает фронтенд `http://localhost:3000`.
