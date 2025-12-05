@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'default' => 'default',
+    'documentations' => [
+        'default' => [
+            'api' => [
+                'title' => 'Taste Index API'
+            ],
+            'securityDefinitions' => [
+                'sanctum' => [
+                    'type' => 'apiKey',
+                    'description' => 'Введите Bearer {token}',
+                    'name' => 'Authorization',
+                    'in' => 'header',
+                ],
+            ],
+            'security' => [
+                ['sanctum' => []],
+            ],
+            'routes' => [
+                'api' => 'api/documentation',
+            ],
+            'paths' => [
+                'docs' => 'storage/api-docs',
+                'annotations' => [base_path('app'), base_path('routes')],
+            ],
+            'generate_always' => true,
+        ],
+    ],
+];
