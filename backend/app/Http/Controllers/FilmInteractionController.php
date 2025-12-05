@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Film;
 use App\Models\Rating;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -56,5 +57,48 @@ class FilmInteractionController extends Controller
     {
         DB::table('watch_later')->where('user_id', $request->user()->id)->where('film_id', $film->id)->delete();
         return response()->json(['status' => 'ok']);
+    }
+
+    public function getNote(Request $request, Film $film)
+    {
+        $note = DB::table('film_notes')
+            ->where('user_id', $request->user()->id)
+            ->where('film_id', $film->id)
+            ->value('note');
+
+        return ['text' => $note ?? ''];
+    }
+
+    public function saveNote(Request $request, Film $film)
+    {
+        $data = $request->validate([
+            'text' => 'nullable|string',
+        ]);
+
+        if (!empty($data['text'])) {
+            DB::table('film_notes')->updateOrInsert(
+                ['user_id' => $request->user()->id, 'film_id' => $film->id],
+                ['note' => $data['text'], 'updated_at' => now(), 'created_at' => now()]
+            );
+        } else {
+            DB::table('film_notes')->where('user_id', $request->user()->id)->where('film_id', $film->id)->delete();
+        }
+
+        return ['status' => 'ok'];
+    }
+
+    public function markWatched(Request $request, Film $film)
+    {
+        $userId = $request->user()->id;
+
+        DB::table('watch_later')->where('user_id', $userId)->where('film_id', $film->id)->delete();
+        DB::table('watched')->updateOrInsert(
+            ['user_id' => $userId, 'film_id' => $film->id],
+            ['watched_at' => Carbon::now()]
+        );
+
+        $hasRating = Rating::where('user_id', $userId)->where('film_id', $film->id)->exists();
+
+        return ['status' => 'ok', 'need_rating' => !$hasRating];
     }
 }

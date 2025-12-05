@@ -72,6 +72,9 @@ class FilmSeeder extends Seeder
                     if ($film->is_18_plus === false && rand(0,1)) {
                         DB::table('watch_later')->updateOrInsert(['user_id'=>$user->id,'film_id'=>$film->id]);
                     }
+                    if (rand(0,1)) {
+                        DB::table('watched')->updateOrInsert(['user_id'=>$user->id,'film_id'=>$film->id], ['watched_at'=>now()]);
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Film, removeRating, setRating, toggleFavorite, toggleWatchLater } from '../lib/api/films'
 import { useState } from 'react'
 import { Heart, Clock4 } from 'lucide-react'
@@ -63,7 +64,9 @@ export default function FilmCard({ film, onChange }: { film: Film; onChange: (ne
       <div className="space-y-2 p-4">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h3 className="text-lg font-semibold leading-tight">{film.title}</h3>
+            <Link href={`/app/films/${film.id}`} className="text-lg font-semibold leading-tight hover:underline">
+              {film.title}
+            </Link>
             <p className="text-sm text-slate-500">
               {film.year} • {film.duration_min ? `${film.duration_min} мин` : '—'}
             </p>

@@ -61,6 +61,25 @@ curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/films?scope=my_rat
 echo "Рекомендации"
 curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/recommendations"
 
+echo "Пользователи"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/users?per_page=3"
+
+echo "Профиль пользователя 2"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/users/2?per_page=3"
+
+echo "Детальная карточка фильма 1"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/films/1"
+
+echo "Сохраняем заметку к фильму 1"
+curl -s -X PUT -H "Authorization: Bearer $demo_token" -H 'Content-Type: application/json' \
+  -d '{"text":"Заметка smoke"}' "$API_BASE/api/films/1/note"
+
+echo "Достаём заметку"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/films/1/note"
+
+echo "Отмечаем просмотренным"
+curl -s -X POST -H "Authorization: Bearer $demo_token" "$API_BASE/api/films/1/watched"
+
 unver_resp=$(login "unverified" "demo12345")
 unver_token=$(echo "$unver_resp" | extract_token)
 if [ -z "$unver_token" ]; then

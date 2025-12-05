@@ -15,8 +15,10 @@ export type Film = {
   countries: { id: number; name: string }[]
   avg_rating: number
   my_rating: number | null
+  user_rating?: number | null
   is_favorite: boolean
   is_watch_later: boolean
+  my_note?: string | null
 }
 
 export type FilmListResponse = {
@@ -72,5 +74,26 @@ export async function toggleFavorite(filmId: number, active: boolean) {
 export async function toggleWatchLater(filmId: number, active: boolean) {
   return apiFetch(`/api/films/${filmId}/watch-later`, {
     method: active ? 'POST' : 'DELETE',
+  })
+}
+
+export async function fetchFilm(id: number): Promise<Film> {
+  return apiFetch(`/api/films/${id}`)
+}
+
+export async function fetchNote(id: number): Promise<{ text: string }> {
+  return apiFetch(`/api/films/${id}/note`)
+}
+
+export async function saveNote(id: number, text: string) {
+  return apiFetch(`/api/films/${id}/note`, {
+    method: 'PUT',
+    body: JSON.stringify({ text }),
+  })
+}
+
+export async function markWatched(id: number) {
+  return apiFetch(`/api/films/${id}/watched`, {
+    method: 'POST',
   })
 }

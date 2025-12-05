@@ -33,8 +33,10 @@ class FilmResource extends JsonResource
             }),
             'avg_rating' => round($this->ratings_avg_rating ?? 0, 2),
             'my_rating' => $this->my_rating ? (int) $this->my_rating : null,
+            'user_rating' => $this->when(isset($this->user_rating), (int) $this->user_rating),
             'is_favorite' => (bool) ($this->is_favorite ?? false),
             'is_watch_later' => (bool) ($this->is_watch_later ?? false),
+            'my_note' => $blocked ? null : ($this->my_note ?? null),
         ];
     }
 }

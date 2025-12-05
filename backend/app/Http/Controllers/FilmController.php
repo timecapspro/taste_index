@@ -163,6 +163,10 @@ class FilmController extends Controller
                 ->where('film_id', $film->id)
                 ->where('user_id', $user->id)
                 ->exists();
+            $film->my_note = DB::table('film_notes')
+                ->where('film_id', $film->id)
+                ->where('user_id', $user->id)
+                ->value('note');
         }
 
         return new FilmResource($film);
