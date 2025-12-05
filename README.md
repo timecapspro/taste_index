@@ -27,6 +27,9 @@ cp frontend/.env.example frontend/.env
 
 В корне укажите `MYSQL_*` и креды для basic-auth (`PMA_BASIC_USER`, `PMA_BASIC_PASS`).
 
+Файл `frontend/.env` автоматически подхватывается сервисом `frontend` через `env_file`; здесь задайте
+`NEXT_PUBLIC_API_BASE_URL`, если хотите явно указать URL бэкенда (иначе в браузере подставится текущий хост:8082).
+
 ### Демо доступ
 
 ```
