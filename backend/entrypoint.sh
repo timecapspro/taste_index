@@ -14,9 +14,12 @@ if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
   fi
 fi
 
-# Try to refresh dependencies; if сеть недоступна, продолжаем с тем, что уже есть
-if ! composer install --no-interaction --no-progress --prefer-dist; then
-  echo "Composer недоступен (скорее всего, нет доступа в интернет). Используем уже имеющийся vendor, если он есть."
+# Запускаем composer install только если vendor пуст — так не ломаемся без сети,
+# если зависимости уже были собраны на этапе сборки образа.
+if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
+  if ! composer install --no-interaction --no-progress --prefer-dist; then
+    echo "Composer недоступен (скорее всего, нет доступа в интернет). Используем уже имеющийся vendor, если он есть."
+  fi
 fi
 
 if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then

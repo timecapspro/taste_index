@@ -44,9 +44,9 @@ password: demo12345
 
 ### Установка зависимостей в контейнерах
 
-- Backend (Laravel): зависимости ставятся автоматически при старте `api` (composer выполняется перед artisan)
-  и кешируются в volume `api_vendor`; если интернет недоступен, контейнер восстановит `vendor` из слоя образа,
-  а затем попробует обновить зависимости. Ручной перезапуск: `docker compose exec api composer install`
+- Backend (Laravel): зависимости собираются на этапе сборки образа и сохраняются в кэше. При старте
+  composer запускается только если volume `api_vendor` пустой; без сети контейнер восстановит `vendor`
+  из слоя образа и пропустит composer. Ручной перезапуск: `docker compose exec api composer install`
 - Frontend (Next.js): `docker compose exec frontend npm install`
 
 ## Структура
