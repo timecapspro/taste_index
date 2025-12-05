@@ -13,7 +13,12 @@ use Illuminate\Support\Collection;
 class UserController extends Controller
 {
     /**
-     * @OA\Get(path="/api/users", summary="Список пользователей", security={{"bearerAuth":{}}})
+     * @OA\Get(
+     *     path="/api/users",
+     *     summary="Список пользователей",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="OK")
+     * )
      */
     public function index(Request $request)
     {
@@ -51,7 +56,14 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Get(path="/api/users/{id}", summary="Профиль пользователя", security={{"bearerAuth":{}}})
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     summary="Профиль пользователя",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="OK"),
+     *     @OA\Response(response=404, description="Not found")
+     * )
      */
     public function show(Request $request, $id)
     {
