@@ -55,10 +55,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
     setSuggestions([])
   }
 
+  const ambientGradient =
+    'bg-[linear-gradient(120deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0)_35%,rgba(255,255,255,0.05)_70%)]'
+  const ambientNoise =
+    "bg-[url('data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 160 160\\"%3E%3Cfilter id=\\"n\\" x=\\"-20%25\\" y=\\"-20%25\\" width=\\"140%25\\" height=\\"140%25\\"%3E%3CfeTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.75\\" numOctaves=\\"2\\" stitchTiles=\\"stitch\\"/%3E%3C/filter%3E%3Crect width=\\"100%25\\" height=\\"100%25\\" filter=\\"url(%23n)\\" opacity=\\"0.14\\"/%3E%3C/svg%3E')]"
+
   return (
     <div className="relative min-h-screen bg-ambient-gradient text-slate-100">
-      <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0)_35%,rgba(255,255,255,0.05)_70%)] opacity-40" />
-      <div className="pointer-events-none fixed inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 160 160\"%3E%3Cfilter id=\"n\" x=\"-20%25\" y=\"-20%25\" width=\"140%25\" height=\"140%25\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.75\" numOctaves=\"2\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23n)\" opacity=\"0.14\"/%3E%3C/svg%3E')]" />
+      <div className={`pointer-events-none fixed inset-0 ${ambientGradient} opacity-40`} />
+      <div className={`pointer-events-none fixed inset-0 ${ambientNoise}`} />
 
       <header className="sticky top-0 z-30 border-b border-white/5 bg-slate-900/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1320px] items-center gap-4 px-4 py-3">
@@ -156,9 +161,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={`rounded-full px-3 py-1.5 transition ${
-                    activeLink
-                      ? 'bg-white text-slate-900 shadow-soft-xl'
-                      : 'text-slate-200 hover:bg-white/10'
+                    activeLink ? 'bg-white text-slate-900 shadow-soft-xl' : 'text-slate-200 hover:bg-white/10'
                   }`}
                 >
                   {item.label}
@@ -190,14 +193,17 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-emerald-200">Ambient</span>
           <span className="rounded-full bg-white/5 px-3 py-1 text-slate-200">Sticky header/nav</span>
         </div>
-        <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-4 shadow-soft-xl backdrop-blur">
-          {children}
-        </div>
+        <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-4 shadow-soft-xl backdrop-blur">{children}</div>
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-slate-900/90 px-4 py-3 text-sm backdrop-blur md:hidden">
         <div className="flex items-center justify-between">
-          {[{ label: 'Каталог', href: '/app/films', icon: <LayoutGrid size={16} /> }, { label: 'Избранное', href: '/app/favorites', icon: <Sparkles size={16} /> }, { label: 'Позже', href: '/app/watch-later', icon: <ClockIcon /> }, { label: 'Оценки', href: '/app/my-ratings', icon: <StarIcon /> }].map((item) => {
+          {[
+            { label: 'Каталог', href: '/app/films', icon: <LayoutGrid size={16} /> },
+            { label: 'Избранное', href: '/app/favorites', icon: <Sparkles size={16} /> },
+            { label: 'Позже', href: '/app/watch-later', icon: <ClockIcon /> },
+            { label: 'Оценки', href: '/app/my-ratings', icon: <StarIcon /> },
+          ].map((item) => {
             const activeLink = active.startsWith(item.href)
             return (
               <Link
