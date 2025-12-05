@@ -8,6 +8,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // TODO: add demo data seeding
+        $this->call([
+            UserSeeder::class,
+            FilmSeeder::class,
+        ]);
     }
 }
