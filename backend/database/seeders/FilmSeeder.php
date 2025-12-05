@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\{Film,Genre,Country,User,Rating};
+use Illuminate\Support\Facades\DB;
 
 class FilmSeeder extends Seeder
 {
@@ -32,6 +33,16 @@ class FilmSeeder extends Seeder
             ['title'=>'Blade Runner 2049','year'=>2017,'duration_min'=>164,'director'=>'Дени Вильнёв','description'=>'Киберпанк детектив.','is_18_plus'=>true,'genres'=>['Фантастика','Триллер'],'countries'=>['США','Канада']],
             ['title'=>'Душа','year'=>2020,'duration_min'=>100,'director'=>'Пит Доктер','description'=>'Путешествие души.','is_18_plus'=>false,'genres'=>['Мультфильм'],'countries'=>['США']],
             ['title'=>'Амели','year'=>2001,'duration_min'=>122,'director'=>'Жан-Пьер Жене','description'=>'Парижская сказка.','is_18_plus'=>false,'genres'=>['Комедия'],'countries'=>['Франция']],
+            ['title'=>'Интерстеллар','year'=>2014,'duration_min'=>169,'director'=>'Кристофер Нолан','description'=>'Космическое путешествие за пределы галактики.','is_18_plus'=>false,'genres'=>['Фантастика','Драма'],'countries'=>['США']],
+            ['title'=>'Матрица','year'=>1999,'duration_min'=>136,'director'=>'Лана и Лилли Вачовски','description'=>'Революция машин.','is_18_plus'=>true,'genres'=>['Фантастика','Боевик'],'countries'=>['США']],
+            ['title'=>'Олдбой','year'=>2003,'duration_min'=>120,'director'=>'Пак Чхан-ук','description'=>'История мести.','is_18_plus'=>true,'genres'=>['Триллер'],'countries'=>['Корея']],
+            ['title'=>'1+1','year'=>2011,'duration_min'=>112,'director'=>'Оливье Накаш','description'=>'Невероятная дружба.','is_18_plus'=>false,'genres'=>['Драма','Комедия'],'countries'=>['Франция']],
+            ['title'=>'Темный рыцарь','year'=>2008,'duration_min'=>152,'director'=>'Кристофер Нолан','description'=>'Бэтмен против Джокера.','is_18_plus'=>false,'genres'=>['Боевик'],'countries'=>['США']],
+            ['title'=>'Зеленая книга','year'=>2018,'duration_min'=>130,'director'=>'Питер Фаррелли','description'=>'Дружба в турне.','is_18_plus'=>false,'genres'=>['Драма'],'countries'=>['США']],
+            ['title'=>'Пила','year'=>2004,'duration_min'=>103,'director'=>'Джеймс Ван','description'=>'Игра на выживание.','is_18_plus'=>true,'genres'=>['Триллер'],'countries'=>['США']],
+            ['title'=>'Выживший','year'=>2015,'duration_min'=>156,'director'=>'Алехандро Гонсалес Иньярриту','description'=>'История выживания.','is_18_plus'=>true,'genres'=>['Драма'],'countries'=>['США','Канада']],
+            ['title'=>'Гарри Поттер и узник Азкабана','year'=>2004,'duration_min'=>142,'director'=>'Альфонсо Куарон','description'=>'Приключения волшебников.','is_18_plus'=>false,'genres'=>['Фэнтези'],'countries'=>['Великобритания']],
+            ['title'=>'Ла-Ла Ленд','year'=>2016,'duration_min'=>128,'director'=>'Дэмиен Шазелл','description'=>'Мюзикл о мечте.','is_18_plus'=>false,'genres'=>['Драма','Комедия'],'countries'=>['США']],
         ];
 
         $users = User::all();
@@ -55,6 +66,12 @@ class FilmSeeder extends Seeder
                         ['user_id'=>$user->id,'film_id'=>$film->id],
                         ['rating'=>rand(6,10)]
                     );
+                }
+                if ($user->login === 'demo') {
+                    DB::table('favorites')->updateOrInsert(['user_id'=>$user->id,'film_id'=>$film->id]);
+                    if ($film->is_18_plus === false && rand(0,1)) {
+                        DB::table('watch_later')->updateOrInsert(['user_id'=>$user->id,'film_id'=>$film->id]);
+                    }
                 }
             }
         }

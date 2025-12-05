@@ -25,6 +25,15 @@ class User extends Authenticatable implements MustVerifyEmail
         'birth_date' => 'date',
     ];
 
+    public function isMinor(): bool
+    {
+        if (!$this->birth_date) {
+            return false;
+        }
+
+        return $this->birth_date->diffInYears(now()) < 18;
+    }
+
     public function ratings()
     {
         return $this->hasMany(Rating::class);

@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\FilmController;
+use App\Http\Controllers\FilmInteractionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/ping', function () {
@@ -27,8 +29,14 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-Route::prefix('app')->middleware(['auth:sanctum', 'verified.api'])->group(function () {
-    Route::get('/ping', function () {
-        return ['ok' => true];
-    });
+Route::middleware(['auth:sanctum', 'verified.api'])->group(function () {
+    Route::get('/films', [FilmController::class, 'index']);
+    Route::get('/films/{film}', [FilmController::class, 'show']);
+
+    Route::put('/films/{film}/rating', [FilmInteractionController::class, 'rate']);
+    Route::delete('/films/{film}/rating', [FilmInteractionController::class, 'removeRate']);
+    Route::post('/films/{film}/favorite', [FilmInteractionController::class, 'favorite']);
+    Route::delete('/films/{film}/favorite', [FilmInteractionController::class, 'unfavorite']);
+    Route::post('/films/{film}/watch-later', [FilmInteractionController::class, 'watchLater']);
+    Route::delete('/films/{film}/watch-later', [FilmInteractionController::class, 'removeWatchLater']);
 });

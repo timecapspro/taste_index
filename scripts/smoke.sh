@@ -33,8 +33,21 @@ fi
 
 echo "Демо токен получен: ${demo_token:0:12}..."
 
-echo "Профиль демо:" 
+echo "Профиль демо:"
 curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/auth/me"
+
+echo "Получаем список фильмов"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/films?per_page=5"
+
+echo "Ставим рейтинг 8 фильму 1"
+curl -s -X PUT -H "Authorization: Bearer $demo_token" -H 'Content-Type: application/json' \
+  -d '{"value":8}' "$API_BASE/api/films/1/rating"
+
+echo "Добавляем в избранное фильм 1"
+curl -s -X POST -H "Authorization: Bearer $demo_token" "$API_BASE/api/films/1/favorite"
+
+echo "Добавляем в \"посмотреть позже\" фильм 1"
+curl -s -X POST -H "Authorization: Bearer $demo_token" "$API_BASE/api/films/1/watch-later"
 
 unver_resp=$(login "unverified" "demo12345")
 unver_token=$(echo "$unver_resp" | extract_token)
@@ -45,4 +58,4 @@ if [ -z "$unver_token" ]; then
 fi
 
 echo "Пробуем доступ к защищенному /api/app/ping для неподтвержденного (ожидаем 403)"
-curl -s -o /dev/null -w "HTTP_CODE:%{http_code}\n" -H "Authorization: Bearer $unver_token" "$API_BASE/api/app/ping"
+curl -s -o /dev/null -w "HTTP_CODE:%{http_code}\n" -H "Authorization: Bearer $unver_token" "$API_BASE/api/films"
