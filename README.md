@@ -9,10 +9,10 @@ docker compose up --build
 ```
 
 Доступы после запуска:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8080
-- Swagger UI: http://localhost:8080/api/documentation
-- phpMyAdmin (через basic-auth): http://localhost:8081
+- Frontend: http://localhost:3030
+- Backend API: http://localhost:8082
+- Swagger UI: http://localhost:8082/api/documentation
+- phpMyAdmin (через basic-auth): http://localhost:3031
 - Быстрая проверка API: `./scripts/smoke.sh` (использует demo/unverified учётки)
 
 ### .env
@@ -27,6 +27,9 @@ cp frontend/.env.example frontend/.env
 
 В корне укажите `MYSQL_*` и креды для basic-auth (`PMA_BASIC_USER`, `PMA_BASIC_PASS`).
 
+Файл `frontend/.env` автоматически подхватывается сервисом `frontend` через `env_file`; здесь задайте
+`NEXT_PUBLIC_API_BASE_URL`, если хотите явно указать URL бэкенда (иначе в браузере подставится текущий хост:8082).
+
 ### Демо доступ
 
 ```
@@ -39,8 +42,15 @@ password: demo12345
 
 - Запуск миграций: `docker compose exec api php artisan migrate`
 - Сиды демо-данных: `docker compose exec api php artisan db:seed`
-- Проверка API: `curl http://localhost:8080/api/ping`
+- Проверка API: `curl http://localhost:8082/api/ping`
 - Smoke-тест авторизации: `./scripts/smoke.sh`
+
+### Установка зависимостей в контейнерах
+
+- Backend (Laravel): зависимости собираются на этапе сборки образа и сохраняются в кэше. При старте
+  composer запускается только если volume `api_vendor` пустой; без сети контейнер восстановит `vendor`
+  из слоя образа и пропустит composer. Ручной перезапуск: `docker compose exec api composer install`
+- Frontend (Next.js): `docker compose exec frontend npm install`
 
 ## Структура
 
@@ -51,6 +61,7 @@ password: demo12345
 
 ## Примечания
 
-- В репозитории находится минимальный каркас Laravel/Next: для полноценной работы требуется установить зависимости (`composer install`, `npm install`) внутри контейнеров или локально.
+- В репозитории находится минимальный каркас Laravel/Next: зависимости бэкенда ставятся автоматически при `docker compose up`,
+  для фронтенда достаточно `npm install` внутри контейнеров или локально.
 - phpMyAdmin защищён обратным прокси `pma_proxy` с basic-auth; пароли формируются из переменных окружения.
-- CORS разрешает фронтенд `http://localhost:3000`.
+- CORS разрешает фронтенд `http://localhost:3030`.
