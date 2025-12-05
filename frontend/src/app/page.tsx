@@ -1,17 +1,28 @@
+import Header from '../components/Header'
 import Link from 'next/link'
 
-export default function LandingPage() {
+export default function HomePage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-6 bg-slate-900 text-white">
-      <h1 className="text-4xl font-bold">ИндексВкуса</h1>
-      <p className="text-center max-w-2xl text-slate-200">
-        Монорепозиторий с Next.js и Laravel API. Этот MVP включает авторизацию, каталог фильмов,
-        избранное и рекомендации. Стек и UX соответствуют прототипу ui.jsx.
-      </p>
-      <div className="flex gap-4">
-        <Link href="/login" className="rounded-md bg-white text-slate-900 px-4 py-2 font-semibold">Войти</Link>
-        <Link href="/register" className="rounded-md border border-white px-4 py-2 font-semibold">Регистрация</Link>
-      </div>
-    </main>
+    <div>
+      <Header />
+      <main className="max-w-5xl mx-auto py-16 px-4 space-y-6">
+        <h1 className="text-4xl font-bold">ИндексВкуса — персональные рекомендации по фильмам</h1>
+        <p className="text-lg text-slate-300">
+          Оценивайте фильмы, ведите списки “Избранное” и “Смотреть позже”, получайте рекомендации по совпадению
+          вкусов.
+        </p>
+        <div className="flex gap-4">
+          <Link
+            href="/register"
+            className="rounded bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-500"
+          >
+            Начать
+          </Link>
+          <Link href="/features" className="rounded border border-slate-600 px-4 py-2 hover:bg-slate-800">
+            Узнать больше
+          </Link>
+        </div>
+      </main>
+    </div>
   )
 }

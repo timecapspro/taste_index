@@ -13,6 +13,7 @@ docker compose up --build
 - Backend API: http://localhost:8080
 - Swagger UI: http://localhost:8080/api/documentation
 - phpMyAdmin (через basic-auth): http://localhost:8081
+- Быстрая проверка API: `./scripts/smoke.sh` (использует demo/unverified учётки)
 
 ### .env
 
@@ -39,6 +40,7 @@ password: demo12345
 - Запуск миграций: `docker compose exec api php artisan migrate`
 - Сиды демо-данных: `docker compose exec api php artisan db:seed`
 - Проверка API: `curl http://localhost:8080/api/ping`
+- Smoke-тест авторизации: `./scripts/smoke.sh`
 
 ## Структура
 

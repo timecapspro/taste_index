@@ -1,16 +1,106 @@
+'use client'
+
+import Link from 'next/link'
+import { FormEvent, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Header from '../../components/Header'
+import { useAuth } from '../../context/AuthContext'
+
 export default function RegisterPage() {
+  const { register } = useAuth()
+  const router = useRouter()
+  const [form, setForm] = useState({
+    email: '',
+    login: '',
+    password: '',
+    password_confirmation: '',
+    birth_date: '',
+    language: 'ru',
+  })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      await register(form)
+      router.replace('/verify-email')
+    } catch (err: any) {
+      setError(err.message || 'Ошибка регистрации')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-900 text-white p-6">
-      <div className="max-w-md w-full space-y-4">
-        <h1 className="text-3xl font-bold">Регистрация</h1>
-        <p className="text-slate-300">Заполните форму, чтобы создать аккаунт. Данные сохраняются в API при подключении к бэкенду.</p>
-        <form className="space-y-3">
-          <input className="w-full rounded-md bg-slate-800 p-3" placeholder="Email" />
-          <input className="w-full rounded-md bg-slate-800 p-3" placeholder="Логин" />
-          <input className="w-full rounded-md bg-slate-800 p-3" placeholder="Пароль" type="password" />
-          <button type="button" className="w-full rounded-md bg-white text-slate-900 p-3 font-semibold">Создать аккаунт</button>
+    <div>
+      <Header />
+      <main className="max-w-md mx-auto p-6 space-y-4">
+        <h1 className="text-2xl font-bold">Регистрация</h1>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Input label="Email" value={form.email} onChange={(email) => setForm({ ...form, email })} type="email" />
+          <Input label="Логин" value={form.login} onChange={(login) => setForm({ ...form, login })} />
+          <Input
+            label="Дата рождения"
+            value={form.birth_date}
+            onChange={(birth_date) => setForm({ ...form, birth_date })}
+            type="date"
+          />
+          <Input
+            label="Пароль"
+            type="password"
+            value={form.password}
+            onChange={(password) => setForm({ ...form, password })}
+          />
+          <Input
+            label="Подтверждение пароля"
+            type="password"
+            value={form.password_confirmation}
+            onChange={(password_confirmation) => setForm({ ...form, password_confirmation })}
+          />
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded bg-indigo-600 px-3 py-2 font-semibold hover:bg-indigo-500 disabled:opacity-60"
+          >
+            {loading ? 'Создаём...' : 'Зарегистрироваться'}
+          </button>
         </form>
-      </div>
-    </main>
+        <p className="text-sm text-slate-300">
+          Уже есть аккаунт?{' '}
+          <Link href="/login" className="underline">
+            Войти
+          </Link>
+        </p>
+      </main>
+    </div>
+  )
+}
+
+function Input({
+  label,
+  value,
+  onChange,
+  type = 'text',
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  type?: string
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="block text-sm text-slate-300">{label}</label>
+      <input
+        value={value}
+        type={type}
+        onChange={(e) => onChange(e.target.value)}
+        required
+        className="w-full rounded bg-slate-800 border border-slate-700 px-3 py-2"
+      />
+    </div>
   )
 }

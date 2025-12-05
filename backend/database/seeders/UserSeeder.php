@@ -24,5 +24,17 @@ class UserSeeder extends Seeder
                 'remember_token' => Str::random(10),
             ]
         );
+
+        User::updateOrCreate(
+            ['email' => 'unverified@example.com'],
+            [
+                'login' => 'unverified',
+                'password' => Hash::make('demo12345'),
+                'birth_date' => now()->subYears(16)->toDateString(),
+                'language' => 'ru',
+                'email_verified_at' => null,
+                'remember_token' => Str::random(10),
+            ]
+        );
     }
 }

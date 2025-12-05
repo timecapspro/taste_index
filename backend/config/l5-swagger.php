@@ -7,6 +7,17 @@ return [
             'api' => [
                 'title' => 'Taste Index API'
             ],
+            'securityDefinitions' => [
+                'sanctum' => [
+                    'type' => 'apiKey',
+                    'description' => 'Введите Bearer {token}',
+                    'name' => 'Authorization',
+                    'in' => 'header',
+                ],
+            ],
+            'security' => [
+                ['sanctum' => []],
+            ],
             'routes' => [
                 'api' => 'api/documentation',
             ],
@@ -14,6 +25,7 @@ return [
                 'docs' => 'storage/api-docs',
                 'annotations' => [base_path('app'), base_path('routes')],
             ],
+            'generate_always' => true,
         ],
     ],
 ];

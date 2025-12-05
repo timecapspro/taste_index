@@ -2,7 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: dark;
+}
+
 body {
   background: #0f172a;
   color: #e2e8f0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
+
+.light body,
+:root[class='light'] body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+input, button { font: inherit; }
