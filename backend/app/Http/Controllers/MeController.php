@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\DB;
 class MeController extends Controller
 {
     /**
-     * @OA\Get(path="/api/me/stats", summary="Статистика профиля", security={{"bearerAuth":{}}})
+     * @OA\Get(
+     *     path="/api/me/stats",
+     *     summary="Статистика профиля",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="OK")
+     * )
      */
     public function stats(Request $request)
     {
