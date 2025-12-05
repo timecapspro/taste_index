@@ -7,8 +7,10 @@ CACHE_DIR=/opt/vendor-cache
 
 # Laravel ожидает каталоги storage и bootstrap/cache даже на стадии composer install
 # (composer запускает package:discover). Создаём их заранее и выставляем права,
-# чтобы скрипты не падали на пустом bind mount.
+# чтобы скрипты не падали на пустом bind mount. Явно задаём владельца и права,
+# чтобы кэш можно было записывать независимо от того, как смонтирован volume.
 mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
+chown -R www-data:www-data "$APP_DIR/storage" "$APP_DIR/bootstrap"
 chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap"
 
 # Seed vendor directory from cached copy baked into the image when available
