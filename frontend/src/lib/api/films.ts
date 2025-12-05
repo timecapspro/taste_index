@@ -18,6 +18,7 @@ export type Film = {
   user_rating?: number | null
   is_favorite: boolean
   is_watch_later: boolean
+  is_watched?: boolean
   my_note?: string | null
 }
 

@@ -4,8 +4,8 @@ import { Film } from './films'
 export type UserSummary = {
   id: number
   login: string
-  email: string
   match_percent: number
+  email?: string
 }
 
 export type UsersResponse = {

@@ -123,6 +123,13 @@ class FilmController extends Controller
                         ->where('user_id', $user->id)
                         ->limit(1),
                     'is_watch_later'
+                )
+                ->selectSub(
+                    DB::table('watched')->selectRaw('1')
+                        ->whereColumn('film_id', 'films.id')
+                        ->where('user_id', $user->id)
+                        ->limit(1),
+                    'is_watched'
                 );
         }
 
@@ -160,6 +167,10 @@ class FilmController extends Controller
                 ->where('user_id', $user->id)
                 ->exists();
             $film->is_watch_later = DB::table('watch_later')
+                ->where('film_id', $film->id)
+                ->where('user_id', $user->id)
+                ->exists();
+            $film->is_watched = DB::table('watched')
                 ->where('film_id', $film->id)
                 ->where('user_id', $user->id)
                 ->exists();

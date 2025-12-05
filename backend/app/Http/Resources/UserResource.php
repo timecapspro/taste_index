@@ -16,10 +16,12 @@ class UserResource extends JsonResource
 
     public function toArray($request)
     {
+        $isSelf = $request->user() && $request->user()->id === $this->id;
+
         return [
             'id' => $this->id,
             'login' => $this->login,
-            'email' => $this->email,
+            'email' => $this->when($isSelf, $this->email),
             'match_percent' => $this->match ?? $this->match_percent ?? 0,
         ];
     }

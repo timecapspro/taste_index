@@ -36,6 +36,7 @@ class FilmResource extends JsonResource
             'user_rating' => $this->when(isset($this->user_rating), (int) $this->user_rating),
             'is_favorite' => (bool) ($this->is_favorite ?? false),
             'is_watch_later' => (bool) ($this->is_watch_later ?? false),
+            'is_watched' => (bool) ($this->is_watched ?? false),
             'my_note' => $blocked ? null : ($this->my_note ?? null),
         ];
     }

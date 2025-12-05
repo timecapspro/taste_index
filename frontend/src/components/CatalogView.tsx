@@ -138,7 +138,7 @@ export default function CatalogView({ scope, emptyMessage, title }: Props) {
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 md:grid-cols-3 sm:grid-cols-1">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
         {filtersOpen && (
           <div className="rounded-lg border border-slate-200 p-4 dark:border-slate-800">
             <div className="flex items-center justify-between">
@@ -230,8 +230,8 @@ export default function CatalogView({ scope, emptyMessage, title }: Props) {
         <div
           className={
             view === 'grid'
-              ? 'col-span-3 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'
-              : 'col-span-3 flex flex-col gap-3'
+              ? 'col-span-1 lg:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
+              : 'col-span-1 lg:col-span-3 flex flex-col gap-3'
           }
         >
           {loading && <div className="col-span-full text-center text-slate-500">Загрузка каталога...</div>}

@@ -87,7 +87,7 @@ export default function FilmDetailPage({ params }: { params: { id: string } }) {
   const handleWatched = async () => {
     if (!film || blocked) return
     const resp = await markWatched(film.id)
-    setFilm({ ...film, is_watch_later: false })
+    setFilm({ ...film, is_watch_later: false, is_watched: true })
     if (resp.need_rating) setNeedRatingPrompt(true)
   }
 

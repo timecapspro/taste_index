@@ -8,6 +8,7 @@ use App\Models\Rating;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
@@ -20,17 +21,27 @@ class UserController extends Controller
         $perPage = (int) $request->input('per_page', 12);
         $page = (int) $request->input('page', 1);
 
-        $currentRatings = Rating::where('user_id', $authUser->id)->get()->keyBy('film_id');
+        $users = User::where('id', '!=', $authUser->id)->get();
 
-        $users = User::where('id', '!=', $authUser->id)->get()->map(function (User $user) use ($currentRatings, $authUser) {
-            $user->match_percent = $this->calculateMatchPercent($authUser, $user, $currentRatings);
+        $currentRatings = Rating::where('user_id', $authUser->id)->get()->keyBy('film_id');
+        $otherRatings = Rating::whereIn('user_id', $users->pluck('id'))
+            ->get()
+            ->groupBy('user_id')
+            ->map(fn ($group) => $group->keyBy('film_id'));
+
+        $usersWithMatch = $users->map(function (User $user) use ($currentRatings, $otherRatings) {
+            $user->match_percent = $this->calculateMatchPercentFromCollections(
+                $currentRatings,
+                $otherRatings->get($user->id, collect())
+            );
+
             return $user;
         })->sortByDesc('match_percent')->values();
 
-        $slice = $users->forPage($page, $perPage);
+        $slice = $usersWithMatch->forPage($page, $perPage);
         $paginator = new LengthAwarePaginator(
             $slice,
-            $users->count(),
+            $usersWithMatch->count(),
             $perPage,
             $page,
             ['path' => $request->url(), 'query' => $request->query()]
@@ -53,15 +64,29 @@ class UserController extends Controller
             ->where('user_id', $targetUser->id)
             ->paginate($perPage);
 
-        $ratings->getCollection()->transform(function (Rating $rating) use ($authUser) {
+        $filmIds = $ratings->getCollection()->pluck('film_id');
+        $myRatings = Rating::where('user_id', $authUser->id)
+            ->whereIn('film_id', $filmIds)
+            ->get()
+            ->keyBy('film_id');
+
+        $ratings->getCollection()->transform(function (Rating $rating) use ($myRatings) {
             $film = $rating->film;
             $film->user_rating = $rating->rating;
-            $film->my_rating = Rating::where('film_id', $film->id)->where('user_id', $authUser->id)->value('rating');
+            $film->my_rating = optional($myRatings->get($film->id))->rating;
+
             return $rating;
         });
 
-        $currentRatings = Rating::where('user_id', $authUser->id)->get()->keyBy('film_id');
-        $matchPercent = $this->calculateMatchPercent($authUser, $targetUser, $currentRatings);
+        $pairRatings = Rating::whereIn('user_id', [$authUser->id, $targetUser->id])
+            ->get()
+            ->groupBy('user_id')
+            ->map(fn ($group) => $group->keyBy('film_id'));
+
+        $matchPercent = $this->calculateMatchPercentFromCollections(
+            $pairRatings->get($authUser->id, collect()),
+            $pairRatings->get($targetUser->id, collect())
+        );
 
         return response()->json([
             'user' => new UserResource($targetUser, $matchPercent),
@@ -69,30 +94,25 @@ class UserController extends Controller
         ]);
     }
 
-    private function calculateMatchPercent(User $authUser, User $otherUser, $currentRatings)
+    private function calculateMatchPercentFromCollections(Collection $currentRatings, Collection $otherRatings): int
     {
-        if ($authUser->id === $otherUser->id) {
-            return 100;
+        if ($currentRatings->isEmpty() || $otherRatings->isEmpty()) {
+            return 0;
         }
 
-        $otherRatings = Rating::where('user_id', $otherUser->id)->get()->keyBy('film_id');
-
-        $sumDiff = 0;
-        $count = 0;
-        foreach ($otherRatings as $filmId => $rating) {
-            if (isset($currentRatings[$filmId])) {
-                $count++;
-                $sumDiff += abs($rating->rating - $currentRatings[$filmId]->rating);
-            }
-        }
+        $common = $currentRatings->keys()->intersect($otherRatings->keys());
+        $count = $common->count();
 
         if ($count < 2) {
             return 0;
         }
 
-        $avgDiff = $sumDiff / $count; // max diff 9
-        $score = max(0, 100 - ($avgDiff / 9) * 100);
+        $sumDiff = $common->reduce(function ($carry, $filmId) use ($currentRatings, $otherRatings) {
+            return $carry + abs($otherRatings->get($filmId)->rating - $currentRatings->get($filmId)->rating);
+        }, 0);
 
-        return (int) round($score);
+        $avgDiff = $sumDiff / $count; // max diff 9
+
+        return (int) round(max(0, 100 - ($avgDiff / 9) * 100));
     }
 }

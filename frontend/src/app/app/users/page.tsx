@@ -47,7 +47,6 @@ export default function UsersPage() {
             >
               <div>
                 <div className="text-lg font-semibold">{u.login}</div>
-                <div className="text-xs text-slate-500">{u.email}</div>
               </div>
               <div className="text-right">
                 <div className="text-sm text-slate-500">Совпадение</div>

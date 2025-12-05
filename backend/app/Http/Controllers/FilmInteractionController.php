@@ -76,10 +76,26 @@ class FilmInteractionController extends Controller
         ]);
 
         if (!empty($data['text'])) {
-            DB::table('film_notes')->updateOrInsert(
-                ['user_id' => $request->user()->id, 'film_id' => $film->id],
-                ['note' => $data['text'], 'updated_at' => now(), 'created_at' => now()]
-            );
+            $noteQuery = DB::table('film_notes')
+                ->where('user_id', $request->user()->id)
+                ->where('film_id', $film->id);
+
+            $existing = $noteQuery->first();
+
+            if ($existing) {
+                $noteQuery->update([
+                    'note' => $data['text'],
+                    'updated_at' => now(),
+                ]);
+            } else {
+                $noteQuery->insert([
+                    'user_id' => $request->user()->id,
+                    'film_id' => $film->id,
+                    'note' => $data['text'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         } else {
             DB::table('film_notes')->where('user_id', $request->user()->id)->where('film_id', $film->id)->delete();
         }
