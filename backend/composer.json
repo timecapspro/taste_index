@@ -6,7 +6,7 @@
     "laravel/framework": "^11.0",
     "laravel/sanctum": "^4.0",
     "laravel/tinker": "^2.8",
-    "l5-swagger/l5-swagger": "^9.0"
+    "darkaonline/l5-swagger": "^9.0"
   },
   "require-dev": {
     "fakerphp/faker": "^1.23",
