@@ -3,7 +3,7 @@ import { getToken } from '../auth-storage'
 function resolveApiBaseUrl() {
   if (typeof window !== 'undefined') {
     const current = new URL(window.location.href)
-    const port = current.port && current.port !== '3000' ? current.port : '8082'
+    const port = current.port && current.port !== '3030' ? current.port : '8082'
     return `${current.protocol}//${current.hostname}:${port}`
   }
 
