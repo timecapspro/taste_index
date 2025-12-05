@@ -1,15 +1,15 @@
 import { getToken } from '../auth-storage'
 
 function resolveApiBaseUrl() {
+  const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim()
+  if (envUrl) {
+    return envUrl
+  }
+
   if (typeof window !== 'undefined') {
     const current = new URL(window.location.href)
     const port = current.port && current.port !== '3030' ? current.port : '8082'
     return `${current.protocol}//${current.hostname}:${port}`
-  }
-
-  const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL
-  if (envUrl && !/localhost|127\.0\.0\.1/.test(envUrl)) {
-    return envUrl
   }
 
   // SSR/CI fallback — работает внутри docker-compose по имени сервиса
