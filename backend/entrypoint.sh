@@ -14,7 +14,12 @@ DB_PASSWORD=${DB_PASSWORD:-}
 # (composer запускает package:discover). Создаём их заранее и выставляем права,
 # чтобы скрипты не падали на пустом bind mount. Явно задаём владельца и права,
 # чтобы кэш можно было записывать независимо от того, как смонтирован volume.
-mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
+mkdir -p \
+  "$APP_DIR/storage/logs" \
+  "$APP_DIR/storage/framework/cache" \
+  "$APP_DIR/storage/framework/sessions" \
+  "$APP_DIR/storage/framework/views" \
+  "$APP_DIR/bootstrap/cache"
 chown -R www-data:www-data "$APP_DIR/storage" "$APP_DIR/bootstrap"
 chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap"
 
