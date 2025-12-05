@@ -27,6 +27,11 @@ if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
   exit 1
 fi
 
+# Laravel ожидает каталоги storage и bootstrap/cache. Создаём и выставляем права, чтобы
+# artisan-команды не падали при пустых volume.
+mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
+chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap"
+
 php artisan migrate --force || true
 php artisan db:seed || true
 php artisan serve --host=0.0.0.0 --port=8000

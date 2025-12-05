@@ -35,6 +35,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 RUN php -r "file_exists('.env') || copy('.env.example', '.env');" && \
     php -r "!file_exists('storage') && mkdir('storage');" && \
+    php -r "!file_exists('storage/logs') && mkdir('storage/logs');" && \
+    php -r "!file_exists('bootstrap/cache') && mkdir('bootstrap/cache');" && \
+    chmod -R 775 storage bootstrap && \
     php artisan key:generate --force || true
 
 CMD ["/usr/local/bin/entrypoint.sh"]
