@@ -152,7 +152,14 @@ class FilmController extends Controller
     }
 
     /**
-     * @OA\Get(path="/api/films/{id}", summary="Детальная карточка", security={{"bearerAuth":{}}})
+     * @OA\Get(
+     *     path="/api/films/{id}",
+     *     summary="Детальная карточка",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="OK"),
+     *     @OA\Response(response=404, description="Not found")
+     * )
      */
     public function show(Request $request, Film $film)
     {
