@@ -11,7 +11,12 @@ use Illuminate\Support\Facades\DB;
 class RecommendationController extends Controller
 {
     /**
-     * @OA\Get(path="/api/recommendations", summary="Рекомендации", security={{"bearerAuth":{}}})
+     * @OA\Get(
+     *     path="/api/recommendations",
+     *     summary="Рекомендации",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="OK")
+     * )
      */
     public function index(Request $request)
     {
