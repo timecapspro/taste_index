@@ -1,6 +1,10 @@
 import { getToken } from '../auth-storage'
 
-export const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
+export const apiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (typeof window !== 'undefined'
+    ? `${window.location.protocol}//${window.location.hostname}:8082`
+    : 'http://localhost:8082')
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = typeof window !== 'undefined' ? getToken() : null
