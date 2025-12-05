@@ -16,6 +16,7 @@ DB_PASSWORD=${DB_PASSWORD:-}
 # чтобы кэш можно было записывать независимо от того, как смонтирован volume.
 mkdir -p \
   "$APP_DIR/storage/logs" \
+  "$APP_DIR/storage/api-docs" \
   "$APP_DIR/storage/framework/cache" \
   "$APP_DIR/storage/framework/sessions" \
   "$APP_DIR/storage/framework/views" \
@@ -63,4 +64,5 @@ done
 
 php artisan migrate --force || true
 php artisan db:seed || true
+php artisan l5-swagger:generate || true
 php artisan serve --host=0.0.0.0 --port=8000
