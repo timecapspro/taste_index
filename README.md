@@ -10,8 +10,8 @@ docker compose up --build
 
 Доступы после запуска:
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:8080
-- Swagger UI: http://localhost:8080/api/documentation
+- Backend API: http://localhost:8082
+- Swagger UI: http://localhost:8082/api/documentation
 - phpMyAdmin (через basic-auth): http://localhost:8081
 - Быстрая проверка API: `./scripts/smoke.sh` (использует demo/unverified учётки)
 
@@ -39,8 +39,14 @@ password: demo12345
 
 - Запуск миграций: `docker compose exec api php artisan migrate`
 - Сиды демо-данных: `docker compose exec api php artisan db:seed`
-- Проверка API: `curl http://localhost:8080/api/ping`
+- Проверка API: `curl http://localhost:8082/api/ping`
 - Smoke-тест авторизации: `./scripts/smoke.sh`
+
+### Установка зависимостей в контейнерах
+
+- Backend (Laravel): зависимости ставятся автоматически при старте `api` и кешируются в volume `api_vendor`; при необходимости
+  повторной установки вручную: `docker compose exec api composer install`
+- Frontend (Next.js): `docker compose exec frontend npm install`
 
 ## Структура
 
@@ -51,6 +57,7 @@ password: demo12345
 
 ## Примечания
 
-- В репозитории находится минимальный каркас Laravel/Next: для полноценной работы требуется установить зависимости (`composer install`, `npm install`) внутри контейнеров или локально.
+- В репозитории находится минимальный каркас Laravel/Next: зависимости бэкенда ставятся автоматически при `docker compose up`,
+  для фронтенда достаточно `npm install` внутри контейнеров или локально.
 - phpMyAdmin защищён обратным прокси `pma_proxy` с basic-auth; пароли формируются из переменных окружения.
 - CORS разрешает фронтенд `http://localhost:3000`.
