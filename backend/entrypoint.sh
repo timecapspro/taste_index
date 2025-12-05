@@ -5,6 +5,12 @@ APP_DIR=/var/www/html
 VENDOR_DIR="$APP_DIR/vendor"
 CACHE_DIR=/opt/vendor-cache
 
+# Laravel ожидает каталоги storage и bootstrap/cache даже на стадии composer install
+# (composer запускает package:discover). Создаём их заранее и выставляем права,
+# чтобы скрипты не падали на пустом bind mount.
+mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
+chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap"
+
 # Seed vendor directory from cached copy baked into the image when available
 if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
   if [ -d "$CACHE_DIR" ] && [ -n "$(ls -A "$CACHE_DIR" 2>/dev/null)" ]; then
@@ -26,11 +32,6 @@ if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
   echo "Vendor по‑прежнему пустой. Без доступа к репозиторию зависимостей контейнер не сможет стартовать."
   exit 1
 fi
-
-# Laravel ожидает каталоги storage и bootstrap/cache. Создаём и выставляем права, чтобы
-# artisan-команды не падали при пустых volume.
-mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
-chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap"
 
 php artisan migrate --force || true
 php artisan db:seed || true
