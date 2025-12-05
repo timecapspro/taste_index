@@ -13,7 +13,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - "3310:3306"
 
   api:
     build:
@@ -25,7 +25,7 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: 'true'
-      APP_URL: ${APP_URL:-http://localhost:8080}
+      APP_URL: ${APP_URL:-http://localhost:8082}
       FRONT_URL: ${FRONT_URL:-http://localhost:3000}
       DB_CONNECTION: mysql
       DB_HOST: db
@@ -35,7 +35,7 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD:-taste_password}
       SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-localhost:3000}
     ports:
-      - "8080:8000"
+      - "8082:8000"
     volumes:
       - ./backend:/var/www/html
     command: sh -c "php artisan migrate --force || true && php artisan db:seed || true && php artisan serve --host=0.0.0.0 --port=8000"
@@ -45,7 +45,7 @@ services:
       context: ./frontend
     container_name: taste_frontend
     environment:
-      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8082}
     depends_on:
       - api
     ports:
