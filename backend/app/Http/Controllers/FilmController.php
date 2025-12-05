@@ -21,6 +21,7 @@ class FilmController extends Controller
      *   @OA\Parameter(name="genres[]", in="query", @OA\Schema(type="array", @OA\Items(type="integer"))),
      *   @OA\Parameter(name="countries[]", in="query", @OA\Schema(type="array", @OA\Items(type="integer"))),
      *   @OA\Parameter(name="sort", in="query", @OA\Schema(type="string", enum={"rating","name","year"})),
+     *   @OA\Parameter(name="scope", in="query", @OA\Schema(type="string", enum={"favorites","watch_later","my_ratings"})),
      *   @OA\Response(response=200, description="OK")
      * )
      */
@@ -29,6 +30,7 @@ class FilmController extends Controller
         $user = $request->user();
 
         $query = Film::query()
+            ->where('status', 'published')
             ->with(['genres', 'countries'])
             ->withAvg('ratings', 'rating');
 
@@ -59,11 +61,42 @@ class FilmController extends Controller
             });
         }
 
+        $scope = $request->string('scope');
+
+        if ($user && $scope === 'favorites') {
+            $query->whereExists(function ($q) use ($user) {
+                $q->selectRaw(1)
+                    ->from('favorites')
+                    ->whereColumn('favorites.film_id', 'films.id')
+                    ->where('favorites.user_id', $user->id);
+            });
+        }
+
+        if ($user && $scope === 'watch_later') {
+            $query->whereExists(function ($q) use ($user) {
+                $q->selectRaw(1)
+                    ->from('watch_later')
+                    ->whereColumn('watch_later.film_id', 'films.id')
+                    ->where('watch_later.user_id', $user->id);
+            });
+        }
+
+        if ($user && ($scope === 'rated' || $scope === 'my_ratings')) {
+            $query->whereExists(function ($q) use ($user) {
+                $q->selectRaw(1)
+                    ->from('ratings')
+                    ->whereColumn('ratings.film_id', 'films.id')
+                    ->where('ratings.user_id', $user->id);
+            });
+        }
+
         $sort = $request->string('sort');
         if ($sort === 'rating') {
             $query->orderByDesc('ratings_avg_rating');
         } elseif ($sort === 'year') {
             $query->orderByDesc('year');
+        } elseif ($sort === 'my_rating' && $user) {
+            $query->orderByDesc('my_rating');
         } else {
             $query->orderBy('title');
         }
@@ -100,12 +133,15 @@ class FilmController extends Controller
             'genres' => DB::table('genres')->select('id', 'name')->get(),
             'countries' => DB::table('countries')->select('id', 'name')->get(),
             'years' => [
-                'min' => (int) Film::min('year'),
-                'max' => (int) Film::max('year'),
+                'min' => (int) Film::where('status', 'published')->min('year'),
+                'max' => (int) Film::where('status', 'published')->max('year'),
             ],
         ];
 
-        return FilmResource::collection($films)->additional(['filters' => $filters]);
+        return FilmResource::collection($films)->additional([
+            'filters' => $filters,
+            'scope' => $scope,
+        ]);
     }
 
     /**

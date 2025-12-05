@@ -46,8 +46,20 @@ curl -s -X PUT -H "Authorization: Bearer $demo_token" -H 'Content-Type: applicat
 echo "Добавляем в избранное фильм 1"
 curl -s -X POST -H "Authorization: Bearer $demo_token" "$API_BASE/api/films/1/favorite"
 
+echo "Получаем избранное"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/films?scope=favorites&per_page=3"
+
 echo "Добавляем в \"посмотреть позже\" фильм 1"
 curl -s -X POST -H "Authorization: Bearer $demo_token" "$API_BASE/api/films/1/watch-later"
+
+echo "Получаем посмотреть позже"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/films?scope=watch_later&per_page=3"
+
+echo "Мои оценки"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/films?scope=my_ratings&per_page=3"
+
+echo "Рекомендации"
+curl -s -H "Authorization: Bearer $demo_token" "$API_BASE/api/recommendations"
 
 unver_resp=$(login "unverified" "demo12345")
 unver_token=$(echo "$unver_resp" | extract_token)

@@ -1,14 +1,11 @@
 import ProtectedRoute from '../../components/ProtectedRoute'
-import Header from '../../components/Header'
+import AppShell from '../../components/AppShell'
 import type { ReactNode } from 'react'
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div>
-      <Header />
-      <ProtectedRoute>
-        <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
-      </ProtectedRoute>
-    </div>
+    <ProtectedRoute>
+      <AppShell>{children}</AppShell>
+    </ProtectedRoute>
   )
 }

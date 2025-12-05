@@ -34,7 +34,9 @@ export type FilmListResponse = {
   }
 }
 
-export async function fetchFilms(params: Record<string, any> = {}): Promise<FilmListResponse> {
+export type FetchFilmsParams = Record<string, any>
+
+export async function fetchFilms(params: FetchFilmsParams = {}): Promise<FilmListResponse> {
   const search = new URLSearchParams()
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined || value === null || value === '') return

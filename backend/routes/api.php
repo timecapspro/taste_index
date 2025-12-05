@@ -4,8 +4,11 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\FilmController;
 use App\Http\Controllers\FilmInteractionController;
+use App\Http\Controllers\MeController;
+use App\Http\Controllers\RecommendationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/ping', function () {
@@ -39,4 +42,9 @@ Route::middleware(['auth:sanctum', 'verified.api'])->group(function () {
     Route::delete('/films/{film}/favorite', [FilmInteractionController::class, 'unfavorite']);
     Route::post('/films/{film}/watch-later', [FilmInteractionController::class, 'watchLater']);
     Route::delete('/films/{film}/watch-later', [FilmInteractionController::class, 'removeWatchLater']);
+
+    Route::get('/recommendations', [RecommendationController::class, 'index']);
+    Route::get('/me/stats', [MeController::class, 'stats']);
+    Route::get('/genres', [DictionaryController::class, 'genres']);
+    Route::get('/countries', [DictionaryController::class, 'countries']);
 });
