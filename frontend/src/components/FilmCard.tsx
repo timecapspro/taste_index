@@ -55,7 +55,7 @@ export default function FilmCard({ film, onChange }: { film: Film; onChange: (ne
           <img src={film.poster_url} alt={film.title} className={`h-full w-full object-cover ${blocked ? 'blur-sm' : ''}`} />
         ) : (
           <div className="flex h-full items-center justify-center text-slate-300">Нет постера</div>
-        )
+        )}
         {film.is_18_plus && <span className="absolute left-2 top-2 rounded bg-red-600 px-2 py-0.5 text-xs text-white">18+</span>}
         {blocked && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-900/70 text-sm text-white">Возрастное ограничение</div>
