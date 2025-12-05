@@ -4,6 +4,11 @@ set -e
 APP_DIR=/var/www/html
 VENDOR_DIR="$APP_DIR/vendor"
 CACHE_DIR=/opt/vendor-cache
+DB_HOST=${DB_HOST:-db}
+DB_PORT=${DB_PORT:-3306}
+DB_DATABASE=${DB_DATABASE:-forge}
+DB_USERNAME=${DB_USERNAME:-root}
+DB_PASSWORD=${DB_PASSWORD:-}
 
 # Laravel ожидает каталоги storage и bootstrap/cache даже на стадии composer install
 # (composer запускает package:discover). Создаём их заранее и выставляем права,
@@ -12,6 +17,9 @@ CACHE_DIR=/opt/vendor-cache
 mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
 chown -R www-data:www-data "$APP_DIR/storage" "$APP_DIR/bootstrap"
 chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap"
+
+# Public может отсутствовать в bind mount, создаём пустую папку, чтобы artisan serve не падал
+mkdir -p "$APP_DIR/public"
 
 # Seed vendor directory from cached copy baked into the image when available
 if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
@@ -34,6 +42,19 @@ if [ ! -d "$VENDOR_DIR" ] || [ -z "$(ls -A "$VENDOR_DIR" 2>/dev/null)" ]; then
   echo "Vendor по‑прежнему пустой. Без доступа к репозиторию зависимостей контейнер не сможет стартовать."
   exit 1
 fi
+
+# Обновляем автозагрузку, чтобы новые сидеры/фабрики подтянулись даже при старом vendor
+composer dump-autoload --no-interaction --optimize || true
+
+echo "Ожидаем доступности БД ${DB_HOST}:${DB_PORT}..."
+for i in $(seq 1 30); do
+  if php -r "try { new PDO('mysql:host=${DB_HOST};port=${DB_PORT};dbname=${DB_DATABASE}', '${DB_USERNAME}', '${DB_PASSWORD}'); } catch (Exception $e) { exit(1);} " >/dev/null 2>&1; then
+    echo "БД доступна."
+    break
+  fi
+  sleep 2
+done
+
 
 php artisan migrate --force || true
 php artisan db:seed || true
