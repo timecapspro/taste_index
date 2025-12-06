@@ -102,10 +102,6 @@ export default function CatalogView({ scope, emptyMessage, title }: Props) {
           <h1 className="text-2xl font-bold text-white md:text-3xl">{title || 'Каталог фильмов'}</h1>
           <p className="text-sm text-slate-300">Адаптация утверждённого прототипа с мягкими градиентами и липкими фильтрами.</p>
         </div>
-        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-200">
-          <span className="rounded-full bg-emerald-500/20 px-2 py-1 font-semibold text-emerald-100">Ambient</span>
-          <span className="rounded-full bg-white/10 px-2 py-1">Sticky layout</span>
-        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[320px,1fr]">

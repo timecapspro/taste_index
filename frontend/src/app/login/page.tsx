@@ -1,12 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import { FormEvent, useState } from 'react'
+import { FormEvent, Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Header from '../../components/Header'
 import { useAuth } from '../../context/AuthContext'
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-slate-300">Загрузка...</div>}>
+      <LoginContent />
+    </Suspense>
+  )
+}
+
+function LoginContent() {
   const { login } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
