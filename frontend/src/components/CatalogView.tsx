@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { LayoutGrid, List, SlidersHorizontal, Sparkles, ArrowRight } from 'lucide-react'
 import FilmCard from './FilmCard'
 import { FetchFilmsParams, Film, FilmListResponse, fetchFilms } from '../lib/api/films'
 import { fetchCountries, fetchGenres, DictionaryItem } from '../lib/api/reference'
@@ -94,77 +95,46 @@ export default function CatalogView({ scope, emptyMessage, title }: Props) {
   const yearMax = filters?.years?.max
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex flex-1 gap-2">
-          <input
-            className="w-full rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
-            placeholder="Поиск по названию"
-            defaultValue={params.get('q') || ''}
-            onBlur={(e) => updateUrl({ q: e.target.value, page: 1 })}
-          />
-          <select
-            className="rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
-            value={params.get('sort') || (scope === 'my_ratings' ? 'my_rating' : 'name')}
-            onChange={(e) => updateUrl({ sort: e.target.value })}
-          >
-            {sortOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">Каталог V3</p>
+          <h1 className="text-2xl font-bold text-white md:text-3xl">{title || 'Каталог фильмов'}</h1>
+          <p className="text-sm text-slate-300">Адаптация утверждённого прототипа с мягкими градиентами и липкими фильтрами.</p>
         </div>
-        <div className="flex gap-2">
-          <button
-            className={`rounded px-3 py-2 text-sm ${view === 'grid' ? 'bg-slate-900 text-white' : 'bg-slate-200 dark:bg-slate-700 dark:text-white'}`}
-            onClick={() => setView('grid')}
-          >
-            Сетка
-          </button>
-          <button
-            className={`rounded px-3 py-2 text-sm ${view === 'list' ? 'bg-slate-900 text-white' : 'bg-slate-200 dark:bg-slate-700 dark:text-white'}`}
-            onClick={() => setView('list')}
-          >
-            Список
-          </button>
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-slate-200">
+          <span className="rounded-full bg-emerald-500/20 px-2 py-1 font-semibold text-emerald-100">Ambient</span>
+          <span className="rounded-full bg-white/10 px-2 py-1">Sticky layout</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{title || 'Каталог'}</h2>
-        <button className="text-sm underline" onClick={() => setFiltersOpen((prev) => !prev)}>
-          {filtersOpen ? 'Свернуть фильтры' : 'Показать фильтры'}
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+      <div className="grid gap-4 lg:grid-cols-[320px,1fr]">
         {filtersOpen && (
-          <div className="rounded-lg border border-slate-200 p-4 dark:border-slate-800">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold">Фильтры</h3>
-              <button
-                className="text-sm underline"
-                onClick={() => updateUrl({ year_min: null, year_max: null, genres: [], countries: [], page: 1 })}
-              >
+          <aside className="rounded-3xl border border-white/10 bg-slate-900/70 p-4 shadow-soft-xl backdrop-blur lg:sticky lg:top-24">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold text-white">
+                <SlidersHorizontal size={16} />
+                Фильтры
+              </div>
+              <button className="text-xs text-emerald-200 hover:text-emerald-100" onClick={() => updateUrl({ year_min: null, year_max: null, genres: [], countries: [], page: 1 })}>
                 Сбросить
               </button>
             </div>
             {filters ? (
-              <div className="mt-3 space-y-3 text-sm">
+              <div className="space-y-4 text-sm">
                 <div>
-                  <div className="mb-1 text-xs text-slate-500">Годы</div>
+                  <div className="mb-2 text-xs uppercase tracking-wide text-slate-400">Годы</div>
                   <div className="flex gap-2">
                     <input
                       type="number"
-                      className="w-1/2 rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-800"
+                      className="w-1/2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-400"
                       placeholder={yearMin ? `${yearMin}` : 'мин'}
                       defaultValue={params.get('year_min') || ''}
                       onBlur={(e) => updateUrl({ year_min: e.target.value || null, page: 1 })}
                     />
                     <input
                       type="number"
-                      className="w-1/2 rounded border border-slate-300 px-2 py-1 dark:border-slate-700 dark:bg-slate-800"
+                      className="w-1/2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-400"
                       placeholder={yearMax ? `${yearMax}` : 'макс'}
                       defaultValue={params.get('year_max') || ''}
                       onBlur={(e) => updateUrl({ year_max: e.target.value || null, page: 1 })}
@@ -172,23 +142,25 @@ export default function CatalogView({ scope, emptyMessage, title }: Props) {
                   </div>
                 </div>
                 <div>
-                  <div className="mb-1 text-xs text-slate-500">Жанры</div>
+                  <div className="mb-2 text-xs uppercase tracking-wide text-slate-400">Жанры</div>
                   <div className="flex flex-wrap gap-2">
                     {genres.map((g) => {
-                      const active = params.getAll('genres').includes(String(g.id))
+                      const activeGenre = params.getAll('genres').includes(String(g.id))
                       return (
                         <button
                           key={g.id}
                           onClick={() => {
                             const current = new Set(params.getAll('genres'))
-                            if (active) {
+                            if (activeGenre) {
                               current.delete(String(g.id))
                             } else {
                               current.add(String(g.id))
                             }
                             updateUrl({ genres: Array.from(current), page: 1 })
                           }}
-                          className={`rounded px-2 py-1 text-xs ${active ? 'bg-emerald-200 text-emerald-800' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}
+                          className={`rounded-full px-3 py-1 text-xs transition ${
+                            activeGenre ? 'bg-emerald-500/20 text-emerald-50 border border-emerald-300/30' : 'bg-white/5 text-slate-200 border border-white/10'
+                          }`}
                         >
                           {g.name}
                         </button>
@@ -198,20 +170,25 @@ export default function CatalogView({ scope, emptyMessage, title }: Props) {
                   </div>
                 </div>
                 <div>
-                  <div className="mb-1 text-xs text-slate-500">Страны</div>
+                  <div className="mb-2 text-xs uppercase tracking-wide text-slate-400">Страны</div>
                   <div className="flex flex-wrap gap-2">
                     {countries.map((c) => {
-                      const active = params.getAll('countries').includes(String(c.id))
+                      const activeCountry = params.getAll('countries').includes(String(c.id))
                       return (
                         <button
                           key={c.id}
                           onClick={() => {
                             const current = new Set(params.getAll('countries'))
-                            if (active) current.delete(String(c.id))
-                            else current.add(String(c.id))
+                            if (activeCountry) {
+                              current.delete(String(c.id))
+                            } else {
+                              current.add(String(c.id))
+                            }
                             updateUrl({ countries: Array.from(current), page: 1 })
                           }}
-                          className={`rounded px-2 py-1 text-xs ${active ? 'bg-blue-200 text-blue-800' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}
+                          className={`rounded-full px-3 py-1 text-xs transition ${
+                            activeCountry ? 'bg-indigo-500/20 text-indigo-50 border border-indigo-300/40' : 'bg-white/5 text-slate-200 border border-white/10'
+                          }`}
                         >
                           {c.name}
                         </button>
@@ -222,45 +199,112 @@ export default function CatalogView({ scope, emptyMessage, title }: Props) {
                 </div>
               </div>
             ) : (
-              <div className="mt-3 text-sm text-slate-500">Загрузка фильтров...</div>
+              <div className="text-xs text-slate-500">Загрузка фильтров...</div>
             )}
-          </div>
+          </aside>
         )}
 
-        <div
-          className={
-            view === 'grid'
-              ? 'col-span-1 lg:col-span-3 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
-              : 'col-span-1 lg:col-span-3 flex flex-col gap-3'
-          }
-        >
-          {loading && <div className="col-span-full text-center text-slate-500">Загрузка каталога...</div>}
-          {!loading && data && data.data.length === 0 && (
-            <div className="col-span-full text-center text-slate-500">{emptyMessage || 'Ничего не найдено'}</div>
-          )}
-          {data?.data.map((film) => (
-            <FilmCard key={film.id} film={film} onChange={handleFilmChange} />
-          ))}
-        </div>
-      </div>
-
-      {data && data.meta.last_page > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          {Array.from({ length: data.meta.last_page }).map((_, i) => {
-            const page = i + 1
-            const active = page === data.meta.current_page
-            return (
-              <button
-                key={page}
-                className={`rounded px-3 py-1 text-sm ${active ? 'bg-slate-900 text-white' : 'bg-slate-200 dark:bg-slate-700 dark:text-white'}`}
-                onClick={() => updateUrl({ page })}
+        <section className="space-y-4">
+          <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/5 p-4 shadow-soft-xl md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-1 flex-wrap items-center gap-3">
+              <input
+                className="w-full min-w-[240px] flex-1 rounded-2xl border border-white/10 bg-slate-900/60 px-4 py-2 text-sm text-white placeholder:text-slate-400"
+                placeholder="Поиск по названию"
+                defaultValue={params.get('q') || ''}
+                onBlur={(e) => updateUrl({ q: e.target.value, page: 1 })}
+              />
+              <select
+                className="rounded-2xl border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white"
+                value={params.get('sort') || (scope === 'my_ratings' ? 'my_rating' : 'name')}
+                onChange={(e) => updateUrl({ sort: e.target.value })}
               >
-                {page}
+                {sortOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white"
+                onClick={() => setFiltersOpen((prev) => !prev)}
+              >
+                <SlidersHorizontal size={16} />
+                {filtersOpen ? 'Скрыть фильтры' : 'Показать фильтры'}
               </button>
-            )
-          })}
-        </div>
-      )}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                className={`flex items-center gap-1 rounded-2xl px-3 py-2 text-sm font-semibold transition ${
+                  view === 'grid' ? 'bg-white text-slate-900 shadow-soft-xl' : 'bg-white/10 text-slate-200'
+                }`}
+                onClick={() => setView('grid')}
+                aria-label="Сетка"
+              >
+                <LayoutGrid size={16} />
+                Сетка
+              </button>
+              <button
+                className={`flex items-center gap-1 rounded-2xl px-3 py-2 text-sm font-semibold transition ${
+                  view === 'list' ? 'bg-white text-slate-900 shadow-soft-xl' : 'bg-white/10 text-slate-200'
+                }`}
+                onClick={() => setView('list')}
+                aria-label="Список"
+              >
+                <List size={16} />
+                Список
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm text-slate-300">
+            <div className="flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5">
+              <Sparkles size={14} className="text-emerald-200" />
+              Найдено: {data?.meta?.total ?? '—'}
+            </div>
+            <button
+              className="inline-flex items-center gap-2 text-xs text-emerald-200 hover:text-emerald-100"
+              onClick={() => router.refresh()}
+            >
+              Обновить
+              <ArrowRight size={14} />
+            </button>
+          </div>
+
+          {loading && <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">Загрузка...</div>}
+
+          {!loading && data?.data && data.data.length === 0 && (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-slate-200">
+              {emptyMessage || 'Ничего не найдено по фильтрам.'}
+            </div>
+          )}
+
+          <div className={view === 'grid' ? 'grid gap-4 md:grid-cols-2 xl:grid-cols-3' : 'space-y-4'}>
+            {data?.data?.map((film) => (
+              <FilmCard key={film.id} film={film} onChange={handleFilmChange} view={view} />
+            ))}
+          </div>
+
+          {data?.meta && data.meta.last_page > 1 && (
+            <div className="flex items-center justify-center gap-2 text-sm text-slate-200">
+              {Array.from({ length: data.meta.last_page }).map((_, idx) => {
+                const page = idx + 1
+                const activePage = data.meta.current_page === page
+                return (
+                  <button
+                    key={page}
+                    onClick={() => updateUrl({ page })}
+                    className={`h-9 w-9 rounded-full border transition ${
+                      activePage ? 'border-white bg-white text-slate-900 shadow-soft-xl' : 'border-white/10 bg-white/5 text-slate-200'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   )
 }
