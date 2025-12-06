@@ -1,5 +1,5 @@
-import CatalogView from '../../../components/CatalogView'
+import IndexVkusV3 from '@/components/prototype/IndexVkusV3'
 
 export default function FavoritesPage() {
-  return <CatalogView scope="favorites" title="Избранное" emptyMessage="Добавьте фильмы в избранное" />
+  return <IndexVkusV3 initialRoute="favorites" />
 }
