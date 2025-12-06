@@ -1,11 +1,5 @@
-import CatalogView from '../../../components/CatalogView'
+import IndexVkusV3 from '@/components/prototype/IndexVkusV3'
 
 export default function MyRatingsPage() {
-  return (
-    <CatalogView
-      scope="my_ratings"
-      title="Мои оценки"
-      emptyMessage="Оцените фильмы, чтобы увидеть список"
-    />
-  )
+  return <IndexVkusV3 initialRoute="myRatings" />
 }
