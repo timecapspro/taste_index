@@ -56,14 +56,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
   }
 
   const ambientGradient =
-    'bg-[linear-gradient(120deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0)_35%,rgba(255,255,255,0.05)_70%)]';
+    'linear-gradient(120deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 35%, rgba(255,255,255,0.05) 70%)'
   const ambientNoise =
-    "bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.14'/%3E%3C/svg%3E\")]";
+    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'><filter id='n' x='-20%25' y='-20%25' width='140%25' height='140%25'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/></svg>\")"
 
   return (
-    <div className="relative min-h-screen bg-ambient-gradient text-slate-100">
-      <div className={`pointer-events-none fixed inset-0 ${ambientGradient} opacity-40`} />
-      <div className={`pointer-events-none fixed inset-0 ${ambientNoise}`} />
+    <div className="relative min-h-screen text-slate-100">
+      <div className="pointer-events-none fixed inset-0 opacity-40" style={{ backgroundImage: ambientGradient }} />
+      <div className="pointer-events-none fixed inset-0" style={{ backgroundImage: ambientNoise, opacity: 0.04 }} />
 
       <header className="sticky top-0 z-30 border-b border-white/5 bg-slate-900/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1320px] items-center gap-4 px-4 py-3">
@@ -187,14 +187,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <main className="relative z-10 mx-auto max-w-[1320px] px-4 pb-16 pt-8">
-        <div className="mb-4 flex items-center gap-3 text-sm text-slate-300">
-          <span className="rounded-full bg-white/5 px-3 py-1 font-medium text-white">V3 Prototype Shell</span>
-          <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-emerald-200">Ambient</span>
-          <span className="rounded-full bg-white/5 px-3 py-1 text-slate-200">Sticky header/nav</span>
-        </div>
-        <div className="rounded-[28px] border border-white/10 bg-slate-900/70 p-4 shadow-soft-xl backdrop-blur">{children}</div>
-      </main>
+      <main className="relative z-10 mx-auto max-w-[1320px] px-4 pb-16 pt-8">{children}</main>
 
       <div className="fixed bottom-0 left-0 right-0 border-t border-white/10 bg-slate-900/90 px-4 py-3 text-sm backdrop-blur md:hidden">
         <div className="flex items-center justify-between">

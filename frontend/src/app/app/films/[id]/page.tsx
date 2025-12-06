@@ -190,7 +190,7 @@ export default function FilmDetailPage({ params }: { params: { id: string } }) {
           <div>
             <div className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Мой рейтинг</div>
             <div className="flex flex-wrap gap-2">
-              {[...Array(10).keys()].map((i) => {
+              {Array.from({ length: 10 }, (_, i) => {
                 const value = i + 1
                 const active = film.my_rating ? film.my_rating >= value : false
                 return (

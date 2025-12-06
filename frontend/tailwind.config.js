@@ -15,6 +15,6 @@ module.exports = {
           'radial-gradient(circle at 20% 20%, rgba(56,189,248,0.12), transparent 35%), radial-gradient(circle at 80% 0%, rgba(167,139,250,0.12), transparent 30%), radial-gradient(circle at 80% 60%, rgba(248,113,113,0.12), transparent 25%), radial-gradient(circle at 0% 80%, rgba(52,211,153,0.14), transparent 35%)',
       },
     },
-  ],
+  },
   plugins: [],
 }

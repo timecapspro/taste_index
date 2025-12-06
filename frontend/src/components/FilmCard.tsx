@@ -141,7 +141,7 @@ export default function FilmCard({ film, onChange, view = 'grid' }: Props) {
         </div>
 
         <div className="flex flex-wrap gap-1">
-          {[...Array(10).keys()].map((i) => {
+          {Array.from({ length: 10 }, (_, i) => {
             const value = i + 1
             const active = film.my_rating ? film.my_rating >= value : false
             return (
