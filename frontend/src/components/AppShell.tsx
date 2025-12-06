@@ -58,7 +58,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const ambientGradient =
     'bg-[linear-gradient(120deg,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0)_35%,rgba(255,255,255,0.05)_70%)]';
   const ambientNoise =
-    "bg-[url('data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 160 160\\"%3E%3Cfilter id=\\"n\\" x=\\"-20%25\\" y=\\"-20%25\\" width=\\"140%25\\" height=\\"140%25\\"%3E%3CfeTurbulence type=\\"fractalNoise\\" baseFrequency=\\"0.75\\" numOctaves=\\"2\\" stitchTiles=\\"stitch\\"/%3E%3C/filter%3E%3Crect width=\\"100%25\\" height=\\"100%25\\" filter=\\"url(%23n)\\" opacity=\\"0.14\\"/%3E%3C/svg%3E')]";
+    "bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'%3E%3Cfilter id='n' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.14'/%3E%3C/svg%3E\")]";
 
   return (
     <div className="relative min-h-screen bg-ambient-gradient text-slate-100">
